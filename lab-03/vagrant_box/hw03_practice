@@ -1,0 +1,271 @@
+Script started on Sun 09 Jun 2019 02:59:14 PM UTC
+]0;root@lvm:/home/vagrant[?1034h[root@lvm vagrant]# lsblk 
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+├─sda1                    8:1    0    1M  0 part 
+├─sda2                    8:2    0    1G  0 part /boot
+└─sda3                    8:3    0   39G  0 part 
+  ├─VolGroup00-LogVol00 253:0    0 37.5G  0 lvm  /
+  └─VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0   10G  0 disk 
+sdc                       8:32   0    2G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+sde                       8:64   0    1G  0 disk 
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvmdiskscan
+  /dev/VolGroup00/LogVol00 [     <37.47 GiB] 
+  /dev/VolGroup00/LogVol01 [       1.50 GiB] 
+  /dev/sda2                [       1.00 GiB] 
+  /dev/sda3                [     <39.00 GiB] LVM physical volume
+  /dev/sdb                 [      10.00 GiB] 
+  /dev/sdc                 [       2.00 GiB] 
+  /dev/sdd                 [       1.00 GiB] 
+  /dev/sde                 [       1.00 GiB] 
+  4 disks
+  3 partitions
+  0 LVM physical volume whole disks
+  1 LVM physical volume
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# pvcreate .e[K[K/dev/sda3 [K[K[Kb
+  Physical volume "/dev/sdb" successfully created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgcreate or[Ktus /dev/sda3 [K[K[Kd[Kb
+  Volume group "otus" successfully created
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate p[Kotus -l+80%FREE -n test
+  Logical volume "test" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vagdi[K[K[K[Kgdisplay otus 
+  --- Volume group ---
+  VG Name               otus
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <10.00 GiB
+  PE Size               4.00 MiB
+  Total PE              2559
+  Alloc PE / Size       2047 / <8.00 GiB
+  Free  PE / Size       512 / 2.00 GiB
+  VG UUID               m1felH-2PBi-b2OY-ltG6-5bLh-KNI0-tjaUqc
+   
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgdisplay otus [C[1@-[1@v[1@ [C[C[C[C[C| grep ''P'V' 'N'a'm'e'
+  [01;31m[KPV Name[m[K               /dev/sdb     
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvdisplay /dev/otus/test 
+  --- Logical volume ---
+  LV Path                /dev/otus/test
+  LV Name                test
+  VG Name                otus
+  LV UUID                X0B0Hc-0dx5-CX6F-XRnD-xdWB-QjTP-x9uuyL
+  LV Write Access        read/write
+  LV Creation host, time lvm, 2019-06-09 15:00:59 +0000
+  LV Status              available
+  # open                 0
+  LV Size                <8.00 GiB
+  Current LE             2047
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree
+  VolGroup00   1   2   0 wz--n- <38.97g    0 
+  otus         1   1   0 wz--n- <10.00g 2.00g
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs
+  LV       VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao---- <37.47g                                                    
+  LogVol01 VolGroup00 -wi-ao----   1.50g                                                    
+  test     otus       -wi-a-----  <8.00g                                                    
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate small ot[K[K[K[K[K[K[K[Kotus -L 100M small-smallnsmall small
+  Logical volume "small" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mkfs.ext4 /dev/otus/r[Ktest 
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+524288 inodes, 2096128 blocks
+104806 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=2147483648
+64 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
+
+Allocating group tables:  0/64     done                            
+Writing inode tables:  0/64     done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information:  0/64     done
+
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mkdir /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# moubt .de[K[K[K/dev/i[Kotus/test /data
+bash: moubt: command not found
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# moubt /dev/otus/test /data[C[1P[1@n
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mout[Knt -t ext4
+/dev/mapper/otus-test on /data type ext4 (rw,relatime,seclabel,data=ordered)
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount -t ext4/dev/otus/test /datab[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[15Pkdir[C[C[C[C[C[Cfs.ext4 /dev/otus/test [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Clvcreate otus -L 100M -n small[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cs[Kvgslvdisplay /dev/otus/test [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cvgdisplay -v otus | grep 'PV Name'otus [Klvcreate otus -l+80%FREE -n test[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[10Pvgcreate otus /dev/sdb[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[5Ppvcreate[C[C[C[C[C[C[C[C[C[Kc
+  Physical volume "/dev/sdc" successfully created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgextend /dev/sdc o[K[K[K[K[K[K[K[K[K[Kotus /dev/sdc
+  Volume group "otus" successfully extended
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgextend otus /dev/sdc[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[5Ppvcreate[C[C[C[C[C[C[C[C[C[4Pmount -t ext4/dev/otus/test /datab[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[15Pkdir[C[C[C[C[C[Cfs.ext4 /dev/otus/test [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Clvcreate otus -L 100M -n small[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cs[Kvgslvdisplay /dev/otus/test [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cvgdisplay -v otus | grep 'PV Name'
+  [01;31m[KPV Name[m[K               /dev/sdb     
+  [01;31m[KPV Name[m[K               /dev/sdc     
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree 
+  VolGroup00   1   2   0 wz--n- <38.97g     0 
+  otus         2   2   0 wz--n-  11.99g <3.90g
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# dd if=/dev/zero of=/data/test.log bs=1M count=8000 status=progress
+913309696 bytes (913 MB) copied, 1.000581 s, 913 MB/s1828716544 bytes (1.8 GB) copied, 2.000624 s, 914 MB/s2745171968 bytes (2.7 GB) copied, 3.001150 s, 915 MB/s3653238784 bytes (3.7 GB) copied, 4.001256 s, 913 MB/s4558159872 bytes (4.6 GB) copied, 5.001483 s, 911 MB/s5429526528 bytes (5.4 GB) copied, 6.004670 s, 904 MB/s6292504576 bytes (6.3 GB) copied, 7.008163 s, 898 MB/s7162822656 bytes (7.2 GB) copied, 8.008404 s, 894 MB/s8006926336 bytes (8.0 GB) copied, 9.008885 s, 889 MB/s
+dd: error writing ‘/data/test.log’: No space left on device
+7880+0 records in
+7879+0 records out
+8262189056 bytes (8.3 GB) copied, 9.3251 s, 886 MB/s
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# df -het ext4 [1P[1P[1@h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/otus-test  7.8G  7.8G     0 100% /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvextend -[K/dev/otus/test -l+80%FREE
+  Size of logical volume otus/test changed from <8.00 GiB (2047 extents) to <11.12 GiB (2846 extents).
+  Logical volume otus/test successfully resized.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs /dev/otus/test 
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  test otus -wi-ao---- <11.12g                                                    
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs /dev/otus/test extend /dev/otus/test -l+80%FREE[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[22Pdf -ht ext4 
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/otus-test  7.8G  7.8G     0 100% /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# resize2fs /dev/otus/test 
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/otus/test is mounted on /data; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 2
+The filesystem on /dev/otus/test is now 2914304 blocks long.
+
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# resize2fs /dev/otus/test [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[13Pdf -ht ext4[C
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/otus-test   11G  7.8G  2.6G  76% /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# umount /data/
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# e2fsck -fy /dev/otus/test 
+e2fsck 1.42.9 (28-Dec-2013)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/otus/test: 12/729088 files (0.0% non-contiguous), 2105907/2914304 blocks
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# e[Kresu[Kix[Kze2fs /dev/otus/test 10G
+resize2fs 1.42.9 (28-Dec-2013)
+Resizing the filesystem on /dev/otus/test to 2621440 (4k) blocks.
+The filesystem on /dev/otus/test is now 2621440 blocks long.
+
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvreduce /dev/otus/test 
+  No command with matching syntax recognised.  Run 'lvreduce --help' for more information.
+  Correct command syntax is:
+  lvreduce -L|--size [-]Size[m|UNIT] LV
+
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvreduce /dev/otus/test 10G
+  No command with matching syntax recognised.  Run 'lvreduce --help' for more information.
+  Correct command syntax is:
+  lvreduce -L|--size [-]Size[m|UNIT] LV
+
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvreduce /dev/otus/test 10G-10GL10G 10G
+  WARNING: Reducing active logical volume to 10.00 GiB.
+  THIS MAY DESTROY YOUR DATA (filesystem etc.)
+Do you really want to reduce otus/test? [y/n]: y
+  Size of logical volume otus/test changed from <11.12 GiB (2846 extents) to 10.00 GiB (2560 extents).
+  Logical volume otus/test successfully resized.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# [2@(reverse-i-search)`':[Cm': umount /data/[1@o[C[C[C[C[1@u[C[C[C[C[1@n[C[C[C[C[1@t[C[C[C[C[1@ [C[C[C[C[1@/[C[C[C[C[1@d[C[C[C[Ce': mount /dev/otus/test /data[11P[root@lvm vagrant]#[C
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# df-[K-[K -Th /data/
+Filesystem            Type  Size  Used Avail Use% Mounted on
+/dev/mapper/otus-test ext4  9.8G  7.8G  1.6G  84% /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs /dev/otus/test 
+  LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  test otus -wi-ao---- 10.00g                                                    
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate /dev[K[K[K[K/dev/otus/test-/dev/otus/tests/dev/otus/test /dev/otus/test[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[Kev/i[Kotus/test -n test-snap[1@ [1@-[1@L[C[1@ [1@5[1@0[1@0[1@M
+  Logical volume "test-snap" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgs -o +lv_size,lv_name | grep test
+  otus         2   3   1 wz--n-  11.99g <1.41g  10.00g [01;31m[Ktest[m[K     
+  otus         2   3   1 wz--n-  11.99g <1.41g 500.00m [01;31m[Ktest[m[K-snap
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lsblk 
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+├─sda1                    8:1    0    1M  0 part 
+├─sda2                    8:2    0    1G  0 part /boot
+└─sda3                    8:3    0   39G  0 part 
+  ├─VolGroup00-LogVol00 253:0    0 37.5G  0 lvm  /
+  └─VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0   10G  0 disk 
+├─otus-small            253:3    0  100M  0 lvm  
+└─otus-test-real        253:4    0   10G  0 lvm  
+  ├─otus-test           253:2    0   10G  0 lvm  /data
+  └─otus-test--snap     253:6    0   10G  0 lvm  
+sdc                       8:32   0    2G  0 disk 
+├─otus-test-real        253:4    0   10G  0 lvm  
+│ ├─otus-test           253:2    0   10G  0 lvm  /data
+│ └─otus-test--snap     253:6    0   10G  0 lvm  
+└─otus-test--snap-cow   253:5    0  500M  0 lvm  
+  └─otus-test--snap     253:6    0   10G  0 lvm  
+sdd                       8:48   0    1G  0 disk 
+sde                       8:64   0    1G  0 disk 
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mkdir /data/[K-snap
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# moubt[K[Knt
+mount       mount.nfs   mount.nfs4  mountpoint  mountstats  
+[root@lvm vagrant]# mount /dev/otus/sn[K[Ktest-snap /data-snap/
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# ll /data-snap/
+total 8068564
+drwx------. 2 root root      16384 Jun  9 15:03 [0m[38;5;27mlost+found[0m
+-rw-r--r--. 1 root root 8262189056 Jun  9 15:05 test.log
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# umount /dta[K[Kata-snap/
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# rm /data/test.log 
+rm: remove regular file ‘/data/test.log’? y
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# ll /data
+total 16
+drwx------. 2 root root 16384 Jun  9 15:03 [0m[38;5;27mlost+found[0m
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# umount /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvconvert --merge /dev/otus/test-snap 
+  Merging of volume otus/test-snap started.
+  otus/test: Merged: 100.00%
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/o[K[K[K[K[K[K[K[K[K[K[K[K[2@(reverse-i-search)`':[C[39@m': lvconvert --merge /dev/otus/test-snap[25Po': umount /data[1@u[C[C[C[C[1@n[C[C[C[C[1@t[C[C[C[C[1@ [C[C[C[C[1@/[C[C[C[C[1@d[C[C[C[C[10P[root@lvm vagrant]#[C[C
+udevadm               umount                uname                 uniq                  unlz4                 unxz                  update-smart-drivedb  userdel               usleep
+ul                    umount.nfs            unexpand              unix_chkpwd           unset                 update-alternatives   uptime                usermod               utmpdump
+ulimit                umount.nfs4           unicode_start         unix_update           unshare               update-ca-trust       urlgrabber            usernetctl            uuidgen
+umask                 unalias               unicode_stop          unlink                until                 update-mime-database  useradd               users                 
+[root@lvm vagrant]# umount /data
+udevadm               umount                uname                 uniq                  unlz4                 unxz                  update-smart-drivedb  userdel               usleep
+ul                    umount.nfs            unexpand              unix_chkpwd           unset                 update-alternatives   uptime                usermod               utmpdump
+ulimit                umount.nfs4           unicode_start         unix_update           unshare               update-ca-trust       urlgrabber            usernetctl            uuidgen
+umask                 unalias               unicode_stop          unlink                until                 update-mime-database  useradd               users                 
+[root@lvm vagrant]# umount /data[1P[C[C[C[C[C[C[C[C[C[C[C[K[K[Kev/otus/test /data
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# ll /data
+total 8068564
+drwx------. 2 root root      16384 Jun  9 15:03 [0m[38;5;27mlost+found[0m
+-rw-r--r--. 1 root root 8262189056 Jun  9 15:05 test.log
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# pvcreate /dev/sd{}d},}e}
+  Physical volume "/dev/sdd" successfully created.
+  Physical volume "/dev/sde" successfully created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgcreate vg0 /dev/sd[Kd{}d},}e}
+  Volume group "vg0" successfully created
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs
+  LV       VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao---- <37.47g                                                    
+  LogVol01 VolGroup00 -wi-ao----   1.50g                                                    
+  small    otus       -wi-a----- 100.00m                                                    
+  test     otus       -wi-ao----  10.00g                                                    
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate vg0 mirror [K[K[K[K[K[K[K-n mirror -l+80%f[KFREE -m1
+  Logical volume "mirror" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate vg0 -n mirror -l+80%FREE -m1[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cs[K
+  LV       VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao---- <37.47g                                                    
+  LogVol01 VolGroup00 -wi-ao----   1.50g                                                    
+  small    otus       -wi-a----- 100.00m                                                    
+  test     otus       -wi-ao----  10.00g                                                    
+  mirror   vg0        rwi-a-r--- 816.00m                                    100.00          
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# exit
+exit
+
+Script done on Sun 09 Jun 2019 03:16:59 PM UTC

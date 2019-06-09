@@ -61,3 +61,8 @@
   ...   
   box.vm.provision "shell", path: "create-raid.sh"   
   ...   
+
+  ## Задание №2 работа с lvm (lab-03)
+
+  * В каталоге lab-03/vagrant_box создани Vagrantfile для запуска ВМ с 4 дополнительными дисками.
+  * 
