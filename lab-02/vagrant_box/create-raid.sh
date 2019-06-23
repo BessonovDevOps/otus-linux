@@ -3,7 +3,8 @@
 set -x
 raid_level=${1:-'10'}
 raid_dev='/dev/md0'
-dev_count=${2:-4}
+
+#dev_count=${2:-4}
 devices=$(ls /dev/sd[b-e])
 device_count=$(ls /dev/sd[b-e]| wc -l)
 
@@ -15,7 +16,10 @@ fi
 
 if [[ ! -e /etc/mdadm/mdadm.conf ]]
 then
-  sudo mkdir -p /etc/mdadm && \
+  if [[ ! -d /etc/mdadm ]]
+  then
+    sudo mkdir -p /etc/mdadm && \
+  fi
   sudo echo "DEVICE partitions" > /etc/mdadm/mdadm.conf && \
   sudo mdadm --detail --scan --verbose | awk '/^ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
 fi
@@ -38,3 +42,4 @@ for i in $(seq 1 5)
 do
   sudo mount /dev/md0p$i /raid/part$i
 done
+
